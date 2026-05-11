@@ -38,4 +38,21 @@ class ApiService {
   String getPhotoUrl(int id) {
     return '$baseUrl/photo/$id';
   }
+
+  Future<String?> getSetting(String key) async {
+    final response = await http.get(Uri.parse('$baseUrl/settings/$key'));
+    if (response.statusCode == 200) {
+      final data = json.decode(response.body);
+      return data['value'];
+    }
+    return null;
+  }
+
+  Future<void> updateSetting(String key, String value) async {
+    await http.post(
+      Uri.parse('$baseUrl/settings'),
+      headers: {'Content-Type': 'application/json'},
+      body: json.encode({'key': key, 'value': value}),
+    );
+  }
 }

@@ -2,7 +2,7 @@ const express = require('express');
 const cors = require('cors');
 const path = require('path');
 const fs = require('fs-extra');
-const { insertPhoto, getPhotosFiltered } = require('./db');
+const { insertPhoto, getPhotosFiltered, getSetting, updateSetting } = require('./db');
 
 const app = express();
 const PORT = 3000;
@@ -60,6 +60,20 @@ app.get('/api/photo/:id', (req, res) => {
     } else {
         res.status(404).json({ error: 'Photo not found' });
     }
+});
+
+// Endpoint to get a setting
+app.get('/api/settings/:key', (req, res) => {
+    const { key } = req.params;
+    const setting = getSetting(key);
+    res.json(setting || { value: null });
+});
+
+// Endpoint to update a setting
+app.post('/api/settings', (req, res) => {
+    const { key, value } = req.body;
+    updateSetting(key, value);
+    res.json({ success: true });
 });
 
 app.listen(PORT, () => {

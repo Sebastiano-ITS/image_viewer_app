@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:provider/provider.dart';
 import '../providers/photo_provider.dart';
+import '../providers/theme_provider.dart';
 
 class RightSidebar extends StatelessWidget {
   const RightSidebar({Key? key}) : super(key: key);
@@ -24,8 +25,27 @@ class RightSidebar extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           const Text(
-            "Filtri e Ordinamento",
+            "Impostazioni",
             style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+          ),
+          const SizedBox(height: 20),
+          Consumer<ThemeProvider>(
+            builder: (context, themeProvider, child) {
+              return ListTile(
+                leading: Icon(themeProvider.themeMode == ThemeMode.light ? Icons.light_mode : Icons.dark_mode),
+                title: const Text("Tema Scuro"),
+                trailing: Switch(
+                  value: themeProvider.themeMode == ThemeMode.dark,
+                  onChanged: (value) => themeProvider.toggleTheme(),
+                ),
+                contentPadding: EdgeInsets.zero,
+              );
+            },
+          ),
+          const Divider(height: 40),
+          const Text(
+            "Filtri e Ordinamento",
+            style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
           ),
           const SizedBox(height: 24),
           const Text("Dimensione Griglia", style: TextStyle(fontWeight: FontWeight.w600)),

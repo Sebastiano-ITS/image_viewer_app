@@ -17,6 +17,16 @@ db.exec(`
   )
 `);
 
+db.exec(`
+  CREATE TABLE IF NOT EXISTS settings (
+    key TEXT PRIMARY KEY,
+    value TEXT
+  )
+`);
+
+// Inizializza il tema se non esiste
+db.prepare("INSERT OR IGNORE INTO settings (key, value) VALUES ('theme', 'dark')").run();
+
 const insertPhoto = db.prepare('INSERT OR IGNORE INTO photos (name, path, size, mime_type) VALUES (?, ?, ?, ?)');
 const getAllPhotos = db.prepare('SELECT * FROM photos ORDER BY created_at DESC');
 
@@ -36,9 +46,19 @@ const getPhotosFiltered = (filter) => {
     return db.prepare(query).all(params);
 };
 
+const getSetting = (key) => {
+    return db.prepare('SELECT value FROM settings WHERE key = ?').get(key);
+};
+
+const updateSetting = (key, value) => {
+    return db.prepare('INSERT OR REPLACE INTO settings (key, value) VALUES (?, ?)').run(key, value);
+};
+
 module.exports = {
     db,
     insertPhoto,
     getAllPhotos,
-    getPhotosFiltered
+    getPhotosFiltered,
+    getSetting,
+    updateSetting
 };
